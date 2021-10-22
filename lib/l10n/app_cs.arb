@@ -1,0 +1,6 @@
+{
+    "helloWorld": "Zduř všeci!",
+    "@helloWorld": {
+      "description": "Oslovení pro všechny"
+    }
+}
