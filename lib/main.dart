@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:minigolf_toolbox/toolbox/scorecard/scorecard.dart';
+import 'generated/l10n.dart';
 
 
 void main() {
@@ -14,13 +15,10 @@ class MinigolfToolboxApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
-      supportedLocales: const [
-        Locale("en", ""),
-        Locale("cs", "CZ"),
-      ],
+      onGenerateTitle: (context) => S.of(context).appName,
+      supportedLocales: S.delegate.supportedLocales,
       localizationsDelegates: const [
-        AppLocalizations.delegate,
+        S.delegate,
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
@@ -61,18 +59,20 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
 
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
+  gotoScorecardActivity(BuildContext context){
+    String laneNames = S.of(context).laneNames ;
+    List<String> laneNamesList = laneNames.split(':');
+    List<int> laneIndices = [1, 5, 2, 10, 15, 21, 6];
+    List<String> playgroundLanesNames = [];
+    for (var element in laneIndices) { playgroundLanesNames.add(laneNamesList[element]); }
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => ScorecardActivity( playerNames: const ['PEPPER', 'SALT'], laneNames: playgroundLanesNames, )),
+    );
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -86,11 +86,43 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         // Here we take the value from the MyHomePage object that was created by
         // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
+        title: Text(S.of(context).appName),
+      ),
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+            children: [
+              DrawerHeader(
+                decoration: const BoxDecoration(
+                  color: Colors.lightGreenAccent,
+                ),
+                  child: Text(S.of(context).drawerHeaderName),
+              ),
+              ListTile(
+                title: Text(S.of(context).drawerMenuItem1Name),
+                onTap: () {
+                  // add action
+
+                  // Close drawer
+                  Navigator.pop(context);
+                },
+              ),
+              ListTile(
+                title: Text(S.of(context).drawerMenuItem2Name),
+                onTap: () {
+
+                  // Close drawer
+                  Navigator.pop(context);
+                },
+              ),
+            ],
+        ),
       ),
       body: Center(
         // Center is a layout widget. It takes a single child and positions it
         // in the middle of the parent.
+        child: Container(
+          padding: const EdgeInsets.all(20.0),
         child: Column(
           // Column is also a layout widget. It takes a list of children and
           // arranges them vertically. By default, it sizes itself to fit its
@@ -106,10 +138,10 @@ class _MyHomePageState extends State<MyHomePage> {
           // center the children vertically; the main axis here is the vertical
           // axis because Columns are vertical (the cross axis would be
           // horizontal).
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
-            Text(
-              AppLocalizations.of(context)!.helloWorld,
+          /*  Text(
+              S.of(context).helloWorld,
             ),
             const Text(
               'You have clicked the button this many times:',
@@ -117,15 +149,39 @@ class _MyHomePageState extends State<MyHomePage> {
             Text(
               '$_counter',
               style: Theme.of(context).textTheme.headline4,
+            ), */
+            const SizedBox(
+              height: 30,
             ),
+            ElevatedButton(
+                onPressed: () {
+                  gotoScorecardActivity(context);
+                },
+                child: Text(S.of(context).btnMainScreenScorecard,
+                  style: const TextStyle(fontSize: 24),
+                ),
+                style: TextButton.styleFrom(
+                  primary: Colors.black54,
+                  backgroundColor: Colors.lightGreen,
+                  minimumSize: const Size(300,150),
+                )),
+            const SizedBox(
+              height: 20,
+            ),
+            ElevatedButton(onPressed: () {},
+                child: Text(S.of(context).btnMainScreenLanes,
+                  style: const TextStyle(fontSize: 24),
+                ),
+                style: TextButton.styleFrom(
+                  primary: Colors.black54,
+                  backgroundColor: Colors.amber,
+                  minimumSize: const Size(300,150),
+                )),
+
           ],
+          ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }

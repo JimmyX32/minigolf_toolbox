@@ -1,0 +1,17 @@
+{
+  "@@locale": "cs",
+  "helloWorld" : "Ahoj světe",
+  "appName" : "Minigolf Toolbox",
+  "titleScorecard" : "Skórkarta",
+  "btnMainScreenScorecard" : "Skórkarta",
+  "btnMainScreenLanes" : "Jak hrát dráhy",
+  "drawerHeaderName" : "Minigolf Toolbox",
+  "drawerMenuItem1Name" : "Skórkarta",
+  "drawerMenuItem2Name" : "Jak hrát dráhy",
+  "laneNames": "pyramidy:looping:šikmý kruh s ledvinou:vlny:šnek:most:koš:přímá dráha s oknem:trubka:příčky:labyrint:ležaté kužely:klíny:proudy:středový kopec:sopka:\"V\" překážka:úhel:blesk:přímá dráha bez překážky:šikmý kruh bez překážky:plošina:okno na klínu:šikmá dráha bez překážky:šikmý kruh s překážkou \"V\"",
+  "@laneNames": {
+    "description": "Names of all official lanes, ordered as in official rules"
+  },
+  "generalTotal" : "Celkem"
+
+}

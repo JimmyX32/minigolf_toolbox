@@ -1,0 +1,16 @@
+{
+  "@@locale": "en",
+  "helloWorld" : "Hello World",
+  "appName" : "Minigolf Toolbox",
+  "titleScorecard" : "Scorecard",
+  "btnMainScreenScorecard" : "Scorecard",
+  "btnMainScreenLanes" : "How to play lanes",
+  "drawerHeaderName" : "Minigolf Toolbox",
+  "drawerMenuItem1Name" : "Scorecard",
+  "drawerMenuItem2Name" : "How to play lanes",
+  "laneNames" : "pyramids:looping:sloped circle with kidney:double waves:flat loop:bridge:jump with net:straight lane with target window:pipe:sticks:labyrinth:truncated cones:double wedges:passages:middle hill:volcano:\"V\"-obstacle:angle:lightning:straight lane without obstacles:sloped circle without obstacles:plateau:wedge with target window:sloped lane without obstacles:sloped circle with \"V\"-obstacle",
+  "@laneNames" : {
+    "description" : "Names of all official lanes, ordered as in official rules"
+  },
+  "generalTotal" : "Total"
+}
