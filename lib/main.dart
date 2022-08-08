@@ -1,15 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:isar/isar.dart';
+import 'package:minigolf_toolbox/toolbox/data/scorecard.dart';
 import 'package:minigolf_toolbox/toolbox/scorecard/scorecard.dart';
+import 'package:path_provider/path_provider.dart';
 import 'generated/l10n.dart';
 
 
-void main() {
-  runApp(const MinigolfToolboxApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  final dbdir = await getApplicationSupportDirectory();
+  final isar = await Isar.open(
+      schemas: [ScorecardSchema],
+      directory: dbdir.path);
+  runApp( MinigolfToolboxApp( isar: isar ) );
 }
 
 class MinigolfToolboxApp extends StatelessWidget {
-  const MinigolfToolboxApp({Key? key}) : super(key: key);
+  final Isar isar;
+  const MinigolfToolboxApp({Key? key, required this.isar}) : super(key: key);
 
   // This widget is the root of your application.
   @override
@@ -35,13 +44,14 @@ class MinigolfToolboxApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: MyHomePage(title: 'Minigolf Toolbox Home Page', isar: isar),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key, required this.title}) : super(key: key);
+  final Isar isar;
+  const MyHomePage({Key? key, required this.title, required this.isar}) : super(key: key);
 
   // This widget is the home page of your application. It is stateful, meaning
   // that it has a State object (defined below) that contains fields that affect

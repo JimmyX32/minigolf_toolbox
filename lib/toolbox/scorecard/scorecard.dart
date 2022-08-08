@@ -1,9 +1,14 @@
+import 'dart:convert';
 import 'dart:ffi';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:isar/isar.dart';
+import 'package:minigolf_toolbox/toolbox/data/scorecard.dart';
 import './/generated/l10n.dart';
 import '../utils/numpad7.dart';
+import 'package:path_provider/path_provider.dart';
 
 class ScorecardActivity extends StatefulWidget {
   final List<String> playerNames;
@@ -22,7 +27,28 @@ class ScorecardActivity extends StatefulWidget {
 class _ScorecardActivityState extends State<ScorecardActivity> {
   int? _strokesCount = 0;
   int _strokesSum = 0;
+  late final List _textControllerLaneList =
+  List.generate(widget.laneNames.length, (i) => List.generate(widget.playerNames.length, (j) => TextEditingController()));
 
+  late List _scorecardValuesArray =
+  List.generate(widget.laneNames.length, (i) => List.generate(widget.playerNames.length, (j) => 0));
+
+  final TextEditingController _textControllerNumpad = TextEditingController();
+
+  final TextEditingController _myController1 = TextEditingController();
+  final TextEditingController _myController2 = TextEditingController();
+
+  late final List<TextEditingController> _myControllerTotalList = List.generate(widget.playerNames.length, (index) => TextEditingController());
+  String _lanesHitsJSON = '';
+  late final Directory dbDir;
+  late final isar;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    print("initState");
+  }
 
   Future _getStrokesCount(String initialValue) async {
     numpad.setValue(initialValue);
@@ -35,23 +61,26 @@ class _ScorecardActivityState extends State<ScorecardActivity> {
 
   void sumStrokes(int columnNumber) {
     _strokesSum = 0;
-    for (var i = 0; i< widget.laneNames.length; i++) {
+    for (var i = 0; i < widget.laneNames.length; i++) {
       _textControllerLaneList[i][columnNumber].text.isNotEmpty ? _strokesSum += int.tryParse(_textControllerLaneList[i][columnNumber].text)! : {};
     }
+  }
+
+  void storeScoredardState() {
+    for (var i = 0; i < widget.laneNames.length; i++) {
+      for (var j = 0; j < widget.playerNames.length; j++ ) {
+        _textControllerLaneList[i][j].text.isNotEmpty ? _scorecardValuesArray[i][j] = int.tryParse(_textControllerLaneList[i][j].text)! : {};
+      }
+    }
+    _lanesHitsJSON = jsonEncode(_scorecardValuesArray);
+    print(_lanesHitsJSON);
   }
 
   goBack(BuildContext context) {
     Navigator.pop(context);
   }
 
-  late final List _textControllerLaneList =
-    List.generate(widget.laneNames.length, (i) => List.generate(widget.playerNames.length, (j) => TextEditingController()));
-  final TextEditingController _textControllerNumpad = TextEditingController();
 
-  final TextEditingController _myController1 = TextEditingController();
-  final TextEditingController _myController2 = TextEditingController();
-
-  late final List<TextEditingController> _myControllerTotalList = List.generate(widget.playerNames.length, (index) => TextEditingController());
 
   // *********************************
   // Create NUMPAD
@@ -110,7 +139,7 @@ class _ScorecardActivityState extends State<ScorecardActivity> {
 
                 TextField(
                   enabled: false,
-                  controller: TextEditingController( text: 'XXX'),
+                  controller: TextEditingController( text: S.of(context).generalTotal ),
                 )
               ]
           )
@@ -136,11 +165,12 @@ class _ScorecardActivityState extends State<ScorecardActivity> {
           for (var i = 0; i < widget.laneNames.length; i++)
             TextFormField(
               onTap: () async {
-                await _getStrokesCount(TextEditingController().text);
+                await _getStrokesCount(_textControllerLaneList[i][columnNumber].text);
                 if (_strokesCount!=null) {
                   _textControllerLaneList[i][columnNumber].text =
                       _strokesCount.toString();
                   sumStrokes(columnNumber);
+                  storeScoredardState();
                   _myControllerTotalList[columnNumber].text =
                       _strokesSum.toString();
                 }
@@ -149,7 +179,7 @@ class _ScorecardActivityState extends State<ScorecardActivity> {
               },
               validator: (value) {
                 if (value!.isEmpty) {
-                  return 'Choose Date';
+                  return 'Choose value';
                 }
               },
               keyboardType: TextInputType.phone,
@@ -184,7 +214,7 @@ class _ScorecardActivityState extends State<ScorecardActivity> {
 
       body: SizedBox(
         height: double.infinity,
-        width: 240,
+        width: 300,
         child: Row(
           children: [
             _generateFirstColumn(widget.laneNames),
